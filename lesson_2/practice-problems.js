@@ -170,11 +170,11 @@ let arr = [
   ["blue", "black", "green"],
 ];
 
-let sortedArr = arr.map((nestedArr) => {
-  if (typeof nestedArr[0] === "number") {
-    return nestedArr.slice().sort((a, b) => Number(a) - Number(b));
+let sortedArr = arr.map((subArr) => {
+  if (typeof subArr[0] === "number") {
+    return subArr.slice().sort((a, b) => Number(a) - Number(b));
   } else {
-    return nestedArr.slice().sort(); //use the sort method to make a shallow copy of the subarrays
+    return subArr.slice().sort(); //use the sort method to make a shallow copy of the subarrays
   }
 });
 
@@ -187,18 +187,18 @@ let arr = [
   ["blue", "black", "green"],
 ];
 
-let sortedArr = arr.map((nestedArr) => {
-  if (typeof nestedArr[0] === "number") {
-    return nestedArr.slice().sort((a, b) => Number(b) - Number(a));
+let sortedArr = arr.map((subArr) => {
+  if (typeof subArr[0] === "number") {
+    return subArr.slice().sort((a, b) => Number(b) - Number(a));
   } else {
-    return nestedArr.slice().sort((a, b) => b.localeCompare(a));
+    return subArr.slice().sort((a, b) => b.localeCompare(a));
   }
 });
 
 console.log(sortedArr);
 
 //LS solution
-arr.map(subArray => {
+arr.map((subArray) => {
   return subArray.slice().sort((a, b) => {
     if (a > b) return -1;
     if (b > a) return 1;
@@ -207,3 +207,122 @@ arr.map(subArray => {
 });
 
 // => [ [ 'c', 'b', 'a' ], [ 11, 2, -3 ], [ 'green', 'blue', 'black' ] ]
+
+//11. Use the map method to return a new array identical in structure to the original but, with each number incremented by 1.
+let arr = [{ a: 1 }, { b: 2, c: 3 }, { d: 4, e: 5, f: 6 }];
+
+let incremented = arr.map((obj) => {
+  let newObj = {};
+  for (let key in obj) {
+    newObj[key] = obj[key] + 1;
+  }
+
+  return newObj;
+});
+
+console.log(incremented); // => [ { a: 2 }, { b: 3, c: 4 }, { d: 5, e: 6, f: 7 } ]
+
+//Using Object.fromEntries and Object.entries
+let incremented = arr.map((obj) => {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key, value + 1])
+  );
+});
+
+console.log(incremented);
+
+//12. Create a deep copy of the following array.
+const arr = [
+  ["b", "c", "a"],
+  ["blue", "black", "green"],
+  { b: [2, 4, 6], c: [3, 6], d: [4] },
+  { e: [8], f: [6, 10] },
+];
+
+let deepCopy = JSON.parse(JSON.stringify(arr));
+// deepCopy[0][0] = 'B' only modifies the deepCopy arr, not the original arr
+
+//13. Create a deep copy of the following nested object.
+const deepCopy = {};
+
+for (let prop in truthiness) {
+  deepCopy[prop] = [...truthiness[prop]];
+}
+
+/*
+JSON cannot be used for this problem because it treats undefined and NaN as null.
+
+let deepCopy = JSON.parse(JSON.stringify(truthiness));
+
+console.log(deepCopy) // { falsy: [ null, null, '', false, null, 0 ], truthy: [ 'everything else...' ] }
+*/
+
+//14. Return a new array using filter() that is identical in structure to the original, but containing only the numbers that are multiples of 3.
+let arr = [[2], [3, 5, 7], [9], [11, 15, 18]];
+
+let multiples = arr.map((subArr) => {
+  return subArr.filter((num) => num % 3 === 0);
+});
+
+console.log(multiples); // => [ [], [ 3 ], [ 9 ], [ 15, 18 ] ]
+
+//15. Sort the array so that the sub-arrays are ordered based on the sum of the odd numbers that they contain.
+
+let arr = [
+  [1, 6, 7],
+  [1, 5, 3],
+  [1, 8, 3],
+];
+
+arr.sort((a, b) => {
+  let oddSumA = a
+    .filter((num) => num % 2 === 1)
+    .reduce((sum, next) => sum + next);
+  let oddSumB = b
+    .filter((num) => num % 2 === 1)
+    .reduce((sum, next) => sum + next);
+
+  return oddSumA - oddSumB;
+});
+
+//16. Return an array containing the colors of the fruits and the sizes of the vegetables. The sizes should be uppercase, and the colors should be capitalized.
+let obj = {
+  grape: { type: "fruit", colors: ["red", "green"], size: "small" },
+  carrot: { type: "vegetable", colors: ["orange"], size: "medium" },
+  apple: { type: "fruit", colors: ["red", "green"], size: "medium" },
+  apricot: { type: "fruit", colors: ["orange"], size: "medium" },
+  marrow: { type: "vegetable", colors: ["green"], size: "large" },
+};
+
+let result = [];
+
+Object.entries(obj).forEach((entry) => {
+  if (entry[1].type === "fruit") {
+    let colorsArr = entry[1].colors;
+    result.push(
+      colorsArr.map((color) => color.slice(0, 1).toUpperCase() + color.slice(1))
+    );
+  } else if (entry[1].type === "vegetable") {
+    result.push(entry[1].size.toUpperCase());
+  }
+});
+
+console.log(result) //[["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
+
+//LS solution
+let capitalize = (word) => word[0].toUpperCase() + word.slice(1);
+
+Object.values(obj).map((attributes) => {
+  if (attributes["type"] === "fruit") {
+    return attributes["colors"].map((char) => capitalize(char));
+  } else {
+    return attributes["size"].toUpperCase();
+  }
+});
+
+//17. Write some code to return an array which contains only the objects where all the numbers are even.
+let arr = [
+  { a: [1, 2, 3] },
+  { b: [2, 4, 6], c: [3, 6], d: [4] },
+  { e: [8], f: [6, 10] },
+];
