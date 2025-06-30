@@ -307,7 +307,7 @@ Object.entries(obj).forEach((entry) => {
   }
 });
 
-console.log(result) //[["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
+console.log(result); //[["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
 
 //LS solution
 let capitalize = (word) => word[0].toUpperCase() + word.slice(1);
@@ -326,3 +326,128 @@ let arr = [
   { b: [2, 4, 6], c: [3, 6], d: [4] },
   { e: [8], f: [6, 10] },
 ];
+
+arr.filter((obj) => {
+  return Object.values(obj).every((subArr) => {
+    return subArr.every((num) => num % 2 === 0);
+  });
+});
+
+// => [ { e: [ 8 ], f: [ 6, 10 ] } ]
+
+//18. Write some code that defines an object where the key is the first item in each subarray, and the value is the second.
+let arr = [
+  ["a", 1],
+  ["b", "two"],
+  ["sea", { c: 3 }],
+  ["D", ["a", "b", "c"]],
+];
+
+// expected value of object
+// { a: 1, b: 'two', sea: { c: 3 }, D: [ 'a', 'b', 'c' ] }
+
+let obj = {};
+arr.forEach((subArr) => {
+  let key = subArr[0];
+  let value = subArr[1];
+  obj[key] = value;
+});
+
+//Using Object.fromEntries
+Object.fromEntries(arr);
+
+//19. For this problem, you are tasked with creating a deep copy of the munsters object, whose nested objects cannot be altered.
+let munsters = {
+  herman: { age: 32, gender: "male" },
+  lily: { age: 30, gender: "female" },
+  grandpa: { age: 402, gender: "male" },
+  eddie: { age: 10, gender: "male" },
+  marilyn: { age: 23, gender: "female" },
+};
+
+function deepCopy(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+
+  let newObj = Array.isArray(obj) ? [] : {};
+
+  for (let key in obj) {
+    newObj[key] = deepCopy(obj[key]);
+  }
+
+  return newObj;
+}
+
+//LS solution
+const munstersIndestructible = JSON.parse(
+  JSON.stringify(munsters),
+  (munster, info) => Object.freeze(info)
+);
+
+/*
+20. A UUID is a type of identifier often used to uniquely identify items, even when some of those items were created on a different server or by a different application. 
+It accomplishes this feat through massive randomization. The number of possible UUID values is approximately 3.4 X 10E38. Each UUID consists of 32 hexadecimal characters 
+(the digits 0-9 and the letters a-f) represented as a string. The value is typically broken into 5 sections in an 8-4-4-4-12 pattern, e.g., 'f65c57f6-a6aa-17a8-faa1-a67f2dc9fa91'.
+Write a function that takes no arguments and returns a string that contains a UUID.
+*/
+
+function randomSection(length = 12) {
+  const characters = "0123456789abcdef";
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+
+  return result;
+}
+
+function generateUUID() {
+  const sections = [8, 4, 4, 4, 12];
+  return sections.map((length) => randomSection(length)).join("-");
+}
+
+generateUUID();
+
+//LS solution
+function generateUUID() {
+  let characters = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"];
+  let sections = [8, 4, 4, 4, 12];
+
+  let uuid = "";
+  sections.forEach((section, sectionIndex) => {
+    for (let index = 1; index <= section; index++) {
+      let randomIndex = Math.floor(Math.random() * characters.length);
+      uuid += characters[randomIndex];
+    }
+
+    if (sectionIndex < sections.length - 1) {
+      uuid += "-";
+    }
+  });
+
+  return uuid;
+}
+
+generateUUID(); // => '02e51c2f-dacd-c319-53b5-e40e6e8c1f78'
+generateUUID(); // => '39038ab9-3b95-43d8-6959-5d785ccb9b69'
+generateUUID(); // => 'f7d56480-c5b2-8d4d-465f-01a4ea605729'
+
+//21. Identify the higher-order functions and callbacks in this code.
+function scream(message, helper) {
+  const shout = () => message.toUpperCase();
+
+  return helper(shout());
+}
+
+const exclamate = (str) => str + "!!!";
+
+const foo = ["heLp", "Boo", "arGH", "Oh no"];
+const FOO = foo.map((word) => scream(word, exclamate));
+
+/*
+Higher-order functions: scream and map.
+Callback functions: exclamate, (word) => ... anonymous function passed to map.
+*/
