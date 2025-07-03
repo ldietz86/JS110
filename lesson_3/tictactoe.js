@@ -7,17 +7,11 @@ const COMPUTER_MARKER = "O";
 //Step 1 - Set up and display the board
 function displayBoard(board) {
   console.log("");
-  console.log("     |     |");
-  console.log(`  ${board["1"]}  |  ${board["2"]}  |  ${board["3"]}`);
-  console.log("     |     |");
-  console.log("-----+-----+-----");
-  console.log("     |     |");
-  console.log(`  ${board["4"]}  |  ${board["5"]}  |  ${board["6"]}`);
-  console.log("     |     |");
-  console.log("-----+-----+-----");
-  console.log("     |     |");
-  console.log(`  ${board["7"]}  |  ${board["8"]}  |  ${board["9"]}`);
-  console.log("     |     |");
+  console.log(` ${board["1"]} | ${board["2"]} | ${board["3"]} `);
+  console.log("---+---+---");
+  console.log(` ${board["4"]} | ${board["5"]} | ${board["6"]} `);
+  console.log("---+---+---");
+  console.log(` ${board["7"]} | ${board["8"]} | ${board["9"]} `);
   console.log("");
 }
 
@@ -61,7 +55,21 @@ function computerChoosesSquare(board) {
 let board = initializeBoard();
 displayBoard(board);
 
-playerChoosesSquare(board);
-computerChoosesSquare(board);
+//Step 3 - The Main Game Loop
+function boardFull(board) {
+  return emptySquares(board).length === 0;
+}
 
-displayBoard(board);
+function someoneWon(board) {
+  return false;
+}
+
+while (true) {
+  playerChoosesSquare(board);
+  computerChoosesSquare(board);
+
+  console.clear();
+  displayBoard(board);
+
+  if (someoneWon(board) || boardFull(board)) break;
+}
